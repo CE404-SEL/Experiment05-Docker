@@ -105,3 +105,115 @@ http {
      - `X-Forwarded-For`: لیست آی‌پی‌های پراکسی شده
      - `X-Forwarded-Proto`: پروتکل اصلی (http/https)
      - `X-Forwarded-Host`: نام سرور NGINX
+
+## پیاده‌سازی Docker-Compose
+
+برای ساده‌تر کردن مدیریت کانتینرها و سرویس‌ها، از Docker-Compose استفاده می‌کنیم. با استفاده از یک فایل `docker-compose.yml` می‌توانیم تمام سرویس‌ها، شبکه‌ها و حجم‌های مورد نیاز را به راحتی تعریف و راه‌اندازی کنیم.
+
+### ایجاد فایل docker-compose.yml
+
+در ریشه پروژه، یک فایل به نام `docker-compose.yml` ایجاد می‌کنیم و تنظیمات زیر را در آن قرار می‌دهیم:
+
+```yaml
+version: "3.8"
+
+services:
+  backend1:
+    build: ./backend
+    container_name: backend1
+    environment:
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:-dev-secret}
+      - DJANGO_DEBUG=${DJANGO_DEBUG:-1}
+      - DB_NAME=${DB_NAME:-app}
+      - DB_USER=${DB_USER:-app}
+      - DB_PASSWORD=${DB_PASSWORD:-app}
+      - DB_HOST=${DB_HOST:-db}
+      - DB_PORT=${DB_PORT:-5432}
+    depends_on:
+      - db
+
+  backend2:
+    build: ./backend
+    container_name: backend2
+    environment:
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:-dev-secret}
+      - DJANGO_DEBUG=${DJANGO_DEBUG:-1}
+      - DB_NAME=${DB_NAME:-app}
+      - DB_USER=${DB_USER:-app}
+      - DB_PASSWORD=${DB_PASSWORD:-app}
+      - DB_HOST=${DB_HOST:-db}
+      - DB_PORT=${DB_PORT:-5432}
+    depends_on:
+      - db
+
+  backend3:
+    build: ./backend
+    container_name: backend3
+    environment:
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:-dev-secret}
+      - DJANGO_DEBUG=${DJANGO_DEBUG:-1}
+      - DB_NAME=${DB_NAME:-app}
+      - DB_USER=${DB_USER:-app}
+      - DB_PASSWORD=${DB_PASSWORD:-app}
+      - DB_HOST=${DB_HOST:-db}
+      - DB_PORT=${DB_PORT:-5432}
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_DB=${DB_NAME:-app}
+      - POSTGRES_USER=${DB_USER:-app}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-app}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend1
+      - backend2
+      - backend3
+
+volumes:
+  pgdata:
+```
+
+### توضیح فایل docker-compose.yml
+
+این **Docker Compose** یک محیط شامل سه بخش اصلی ایجاد می‌کند: چند backend، دیتابیس و NGINX. به طور خلاصه:
+
+1. **نسخه Compose:**
+
+   - `version: "3.8"` برای سازگاری با ویژگی‌های جدید Docker Compose.
+
+2. **سرویس‌ها (services):**
+
+   - **backend1, backend2, backend3:**
+
+     - هر سه سرویس از همان مسیر `./backend` ساخته می‌شوند.
+     - متغیرهای محیطی برای Django و اتصال به PostgreSQL تعریف شده‌اند (`DJANGO_SECRET_KEY`, `DB_NAME`, `DB_USER` و …).
+     - `depends_on: db`: قبل از اجرای backend، دیتابیس باید آماده باشد.
+     - در واقع این سه سرویس یک **کلاستر ساده Django** هستند که پشت NGINX قرار می‌گیرند.
+
+   - **db:**
+
+     - یک کانتینر PostgreSQL نسخه 16 با تصویر سبک `alpine`.
+     - دیتابیس و یوزر/پسورد طبق متغیرهای محیطی تنظیم شده است.
+     - داده‌ها در volume `pgdata` ذخیره می‌شوند تا با حذف کانتینر، اطلاعات از بین نروند.
+
+   - **nginx:**
+
+     - کانتینر NGINX با تصویر سبک `alpine`.
+     - پورت ۸۰ میزبان به پورت ۸۰ کانتینر متصل شده.
+     - کانفیگ NGINX از فایل محلی `./nginx/nginx.conf` بارگذاری می‌شود.
+     - `depends_on` روی سه backend: قبل از اجرای NGINX، backendها آماده باشند.
+
+3. **volumes:**
+
+   - `pgdata`: ذخیره‌سازی پایدار برای دیتابیس PostgreSQL.
