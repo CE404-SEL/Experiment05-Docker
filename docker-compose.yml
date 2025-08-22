@@ -1,8 +1,17 @@
 version: "3.8"
 
 services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_DB=${DB_NAME:-app}
+      - POSTGRES_USER=${DB_USER:-app}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-app}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
   backend1:
-    build: ./backend
+    build: .
     container_name: backend1
     environment:
       - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:-dev-secret}
@@ -16,7 +25,7 @@ services:
       - db
 
   backend2:
-    build: ./backend
+    build: .
     container_name: backend2
     environment:
       - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:-dev-secret}
@@ -30,7 +39,7 @@ services:
       - db
 
   backend3:
-    build: ./backend
+    build: .
     container_name: backend3
     environment:
       - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:-dev-secret}
@@ -42,15 +51,6 @@ services:
       - DB_PORT=${DB_PORT:-5432}
     depends_on:
       - db
-
-  db:
-    image: postgres:16-alpine
-    environment:
-      - POSTGRES_DB=${DB_NAME:-app}
-      - POSTGRES_USER=${DB_USER:-app}
-      - POSTGRES_PASSWORD=${DB_PASSWORD:-app}
-    volumes:
-      - pgdata:/var/lib/postgresql/data
 
   nginx:
     image: nginx:alpine
