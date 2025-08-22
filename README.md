@@ -452,3 +452,204 @@ docker compose logs -f backend1
 مشاهده می‌کنیم که درخواست به سرویس backend3 ارسال شده است.
 
 پس از مشاهده توزیع بار به صورت متعادل بین سرویس‌های backend، می‌توانیم نتیجه بگیریم که Loadbalancing به درستی کار می‌کند.
+
+
+
+
+v```markdown
+# 📑 مستندات API نویسنده و وبلاگ
+
+## نویسندگان (Authors)
+
+### 1. ایجاد نویسنده جدید  
+**Endpoint:**  
+```
+
+POST /authors/
+
+````
+
+**هدرها (Headers):**
+```json
+{
+  "Content-Type": "application/json"
+}
+````
+
+**نمونه بدنه درخواست (Request Body):**
+
+```json
+{
+  "full_name": "John Doe",
+  "age": 30,
+  "description": "A writer.",
+  "github": "https://github.com/johndoe",
+  "linkedin": "https://linkedin.com/in/johndoe",
+  "email": "johndoe@example.com"
+}
+```
+
+
+### 2. دریافت لیست کامل نویسندگان
+
+**Endpoint:**
+
+```
+GET /authors/readall/
+```
+
+
+### 3. دریافت نویسنده با شناسه (ID)
+
+**Endpoint:**
+
+```
+GET /authors/{id}/
+```
+
+**مثال:**
+
+```
+GET /authors/1/
+```
+
+
+### 4. بروزرسانی نویسنده با شناسه (ID)
+
+**Endpoint:**
+
+```
+PUT /authors/{id}/
+```
+
+**هدرها (Headers):**
+
+```json
+{
+  "Content-Type": "application/json"
+}
+```
+
+**نمونه بدنه درخواست (Request Body):**
+
+```json
+{
+  "full_name": "John Doe Updated",
+  "age": 31,
+  "description": "Updated writer.",
+  "github": "https://github.com/johndoeupdated",
+  "linkedin": "https://linkedin.com/in/johndoeupdated",
+  "email": "johndoeupdated@example.com"
+}
+```
+
+
+### 5. حذف نویسنده با شناسه (ID)
+
+**Endpoint:**
+
+```
+DELETE /authors/{id}/
+```
+
+**مثال:**
+
+```
+DELETE /authors/1/
+```
+---
+## وبلاگ‌ها (Blogs)
+
+### 1. ایجاد وبلاگ جدید
+
+**Endpoint:**
+
+```
+POST /blogs/
+```
+
+**هدرها (Headers):**
+
+```json
+{
+  "Content-Type": "application/json"
+}
+```
+
+**نمونه بدنه درخواست (Request Body):**
+
+```json
+{
+  "author": 1,
+  "markdown": "# Blog Content",
+  "title": "My First Blog",
+  "is_active": true
+}
+```
+
+
+### 2. دریافت لیست کامل وبلاگ‌ها
+
+**Endpoint:**
+
+```
+GET /blogs/readall/
+```
+
+
+### 3. دریافت وبلاگ با شناسه (ID)
+
+**Endpoint:**
+
+```
+GET /blogs/{id}/
+```
+
+**مثال:**
+
+```
+GET /blogs/1/
+```
+
+
+### 4. بروزرسانی وبلاگ با شناسه (ID)
+
+**Endpoint:**
+
+```
+PUT /blogs/{id}/
+```
+
+**هدرها (Headers):**
+
+```json
+{
+  "Content-Type": "application/json"
+}
+```
+
+**نمونه بدنه درخواست (Request Body):**
+
+```json
+{
+  "author": 1,
+  "markdown": "# Updated Blog Content",
+  "title": "Updated Blog",
+  "is_active": false
+}
+```
+
+
+### 5. حذف وبلاگ با شناسه (ID)
+
+**Endpoint:**
+
+```
+DELETE /blogs/{id}/
+```
+
+**مثال:**
+
+```
+DELETE /blogs/1/
+```
