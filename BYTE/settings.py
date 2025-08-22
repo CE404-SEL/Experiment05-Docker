@@ -1,12 +1,13 @@
 from pathlib import Path
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-crf#w5cmt=&1iny%8^r^!vs8bnkqs10kf#u+e6t8yad6t$ylq^'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-crf#w5cmt=&1iny%8^r^!vs8bnkqs10kf#u+e6t8yad6t$ylq^')
 
-DEBUG = True
+DEBUG = os.getenv('DJANGO_DEBUG', '1') == '1'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '*').split(',')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -51,10 +52,22 @@ WSGI_APPLICATION = 'BYTE.wsgi.application'
 
 DATABASES = {
     'default': {
+        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
+        'NAME': os.getenv('DB_NAME', 'app'),
+        'USER': os.getenv('DB_USER', 'app'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'app'),
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '5432'),
+    }
+}
+
+# Fallback to sqlite when no Postgres is configured (e.g., local runs)
+if DATABASES['default']['ENGINE'] != 'django.db.backends.postgresql' and \
+   DATABASES['default']['ENGINE'] != 'django.db.backends.postgresql_psycopg2':
+    DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
-}
 
 AUTH_PASSWORD_VALIDATORS = [
     {

@@ -1,5 +1,110 @@
 # Experiment05-Docker
 
+## بررسی پروژه و تکنولوژی استفاده شده
+
+برای پیاده‌سازی این سرویس backend از فریم‌ورک جنگو که مبتنی بر زبان برنامه‌نویسی پایتون است، استفاده شده است.
+به دلیل سرعت و سادگی در استفاده، ما از این فریم‌ورک برای انجام پروژه استفاده کردیم.
+
+در این پروژه، بک‌اند یک وبلاگ تستی و ساده را مورد بررسی قرار دادیم. برای آن ۲ مدل به نام‌های `Author` و `Blog` تعریف کرده‌ایم که ساختار و اتریبیوت‌های آن‌های را در زیر مشاهده می‌کنید:
+
+```python
+class Author(models.Model):
+    full_name = models.CharField(max_length=255, null=False, blank=True)
+    description = models.CharField(max_length=255, null=False, blank=True)
+    age = models.PositiveIntegerField()
+    github = models.URLField()
+    linkedin = models.URLField()
+    email = models.EmailField()
+
+    def __str__(self):
+        return f"{self.full_name} - {self.description}"
+
+
+class Blog(models.Model):
+    author = models.ForeignKey(Author, related_name='blogs', on_delete=models.CASCADE)
+    markdown = models.TextField()
+    title = models.CharField(blank=False, null=False, max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.author.full_name} - {self.title}"
+```
+
+رابطه‌ی بین این دو مدل به صورت یک به چند است زیرا که یک نویسنده می‌تواند چندین بلاگ نوشته باشد اما یک بلاگ را فقط یک نفر نوشته است.
+
+
+باز هم به دلیل سادگی و سرعت پیاده‌سازی، ما از کتابخانه‌ی `DjangoRestFramework`
+استفاده کردیم تا `API`ها را با ساعت و تعداد خط کد کمتری پیاده‌سازی کنیم.
+
+## جزئیات API ها
+
+برای ساخت `API`ها از کلاس 
+`generics`
+که داخل کتابخانه 
+`DjangoRestFramework`
+استفاده کردیم.
+
+لیست `View`های موجود در پروژه در ادمه قابل مشاهده است:
+
+```python
+class AuthorListCreate(generics.ListCreateAPIView):
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializer
+
+class AuthorDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializer
+
+class BlogListCreate(generics.ListCreateAPIView):
+    queryset = Blog.objects.all()
+    serializer_class = BlogSerializer
+
+class BlogDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Blog.objects.all()
+    serializer_class = BlogSerializer
+
+class AuthorReadAll(generics.ListAPIView):
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializer
+
+class BlogReadAll(generics.ListAPIView):
+    queryset = Blog.objects.all()
+    serializer_class = BlogSerializer
+```
+
+همچنین برای ۲ مدل خود سریالایزر هم نوشتیم تا فقط اتریبیوت‌های مورد نظر ما در `API`ها
+برگردانده شوند:
+
+```python
+class AuthorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Author
+        fields = ['id', 'full_name', 'age', 'description', 'github', 'linkedin', 'email']
+
+class BlogSerializer(serializers.ModelSerializer):
+    author = AuthorSerializer()
+
+    class Meta:
+        model = Blog
+        fields = ['id', 'author', 'markdown', 'title', 'created_at', 'is_active']
+```
+
+همچنین `URL` هر کدام از `View`
+ها را مطابق ساختار زیر مشخص کردیم و برای هر کدام یک نام هم اختصاص دادیم:
+
+```python
+urlpatterns = [
+    path('authors/', blog_views.AuthorListCreate.as_view(), name='author-list-create'),
+    path('authors/<int:pk>/', blog_views.AuthorDetail.as_view(), name='author-detail'),
+    path('authors/readall/', blog_views.AuthorReadAll.as_view(), name='author-readall'),
+
+    path('blogs/', blog_views.BlogListCreate.as_view(), name='blog-list-create'),
+    path('blogs/<int:pk>/', blog_views.BlogDetail.as_view(), name='blog-detail'),
+    path('blogs/readall/', blog_views.BlogReadAll.as_view(), name='blog-readall'),
+]
+```
+
 ## بررسی داکرفایل پروژه backend
 
 داکرفایل نوشته شده برای پروژه backend به صورت زیر است:
@@ -37,6 +142,9 @@ CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 6. **باز کردن پورت**: با استفاده از دستور `EXPOSE 8000`، پورت 8000 برای دسترسی به برنامه در حال اجرا باز می‌شود.
 
 7. **اجرای سرور**: در نهایت، با استفاده از دستور `CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]`، سرور Django در آدرس `0.0.0.0:8000` راه‌اندازی می‌شود.
+
+
+**به دلیل محدودیت‌های اینترنتی، از یک mirror داخلی برای نصب وابستگی‌های پروژه استفاده شده‌است!**
 
 ## پیاده‌سازی load balancer
 
