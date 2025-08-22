@@ -1,0 +1,277 @@
+{
+    "info": {
+        "_postman_id": "c3fcf21a-12b7-4adf-9d7a-2116e9b1c56c",
+        "name": "Blog Author API Test",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Create Author",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "description": ""
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"full_name\": \"John Doe\", \"age\": 30, \"description\": \"A writer.\", \"github\": \"https://github.com/johndoe\", \"linkedin\": \"https://linkedin.com/in/johndoe\", \"email\": \"johndoe@example.com\"}"
+                },
+                "url": {
+                    "raw": "http://127.0.0.1:8000/authors/",
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "8000",
+                    "path": [
+                        "authors"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "List All Authors",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://127.0.0.1:8000/authors/readall/",
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "8000",
+                    "path": [
+                        "authors",
+                        "readall"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Retrieve Author by ID",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://127.0.0.1:8000/authors/1/",
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "8000",
+                    "path": [
+                        "authors",
+                        "1"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Update Author by ID",
+            "request": {
+                "method": "PUT",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "description": ""
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"full_name\": \"John Doe Updated\", \"age\": 31, \"description\": \"Updated writer.\", \"github\": \"https://github.com/johndoeupdated\", \"linkedin\": \"https://linkedin.com/in/johndoeupdated\", \"email\": \"johndoeupdated@example.com\"}"
+                },
+                "url": {
+                    "raw": "http://127.0.0.1:8000/authors/1/",
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "8000",
+                    "path": [
+                        "authors",
+                        "1"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Delete Author by ID",
+            "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                    "raw": "http://127.0.0.1:8000/authors/1/",
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "8000",
+                    "path": [
+                        "authors",
+                        "1"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Create Blog",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "description": ""
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"author\": 1, \"markdown\": \"# Blog Content\", \"title\": \"My First Blog\", \"is_active\": true}"
+                },
+                "url": {
+                    "raw": "http://127.0.0.1:8000/blogs/",
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "8000",
+                    "path": [
+                        "blogs"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "List All Blogs",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://127.0.0.1:8000/blogs/readall/",
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "8000",
+                    "path": [
+                        "blogs",
+                        "readall"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Retrieve Blog by ID",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://127.0.0.1:8000/blogs/1/",
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "8000",
+                    "path": [
+                        "blogs",
+                        "1"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Update Blog by ID",
+            "request": {
+                "method": "PUT",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "description": ""
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"author\": 1, \"markdown\": \"# Updated Blog Content\", \"title\": \"Updated Blog\", \"is_active\": false}"
+                },
+                "url": {
+                    "raw": "http://127.0.0.1:8000/blogs/1/",
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "8000",
+                    "path": [
+                        "blogs",
+                        "1"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Delete Blog by ID",
+            "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                    "raw": "http://127.0.0.1:8000/blogs/1/",
+                    "protocol": "http",
+                    "host": [
+                        "127",
+                        "0",
+                        "0",
+                        "1"
+                    ],
+                    "port": "8000",
+                    "path": [
+                        "blogs",
+                        "1"
+                    ]
+                }
+            },
+            "response": []
+        }
+    ]
+}
